@@ -1,0 +1,7 @@
+.vscode/
+__pycache__/
+infer/lib/__pycache__/
+infer/lib/jit/__pycache__/
+
+*.pt
+*.onnx
