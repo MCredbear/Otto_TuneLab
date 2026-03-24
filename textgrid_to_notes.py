@@ -135,6 +135,7 @@ def textgrid_to_notes(
     bpm: float,
     fps: float,
     f0: np.ndarray,
+    time_offset_sec: float = 0.0,
     skip_phones: set = SKIP_DEFAULT,
 ) -> List[Dict]:
     try:
@@ -151,11 +152,13 @@ def textgrid_to_notes(
             continue
 
         syl_len = we - ws
-        pos_tick = sec_to_tick(ws, bpm)
+        ws_global = ws + float(time_offset_sec)
+        we_global = we + float(time_offset_sec)
+        pos_tick = sec_to_tick(ws_global, bpm)
         dur_tick = sec_to_tick(syl_len, bpm)
 
-        i0 = max(0, int(round(ws * fps)))
-        i1 = min(len(midi), int(round(we * fps)))
+        i0 = max(0, int(round(ws_global * fps)))
+        i1 = min(len(midi), int(round(we_global * fps)))
         if i1 > i0 + 1:
             pitch_int = int(round(float(np.median(midi[i0:i1]))))
 
