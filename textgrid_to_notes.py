@@ -61,6 +61,10 @@ PH_MAP: Dict[str, List[str]] = {
     "yu": ["j", "M"],
     "ye": ["j", "e"],
     "yo": ["j", "o"],
+    "kya": ["k'", "a"],
+    "kyu": ["k'", "M"],
+    "kye": ["k'", "e"],
+    "kyo": ["k'", "o"],
     "n": ["N"],
 }
 
