@@ -8,7 +8,7 @@ import librosa
 
 from audio_to_f0 import audio_to_f0
 from f0_to_pitch import f0_to_pitch
-from textgrid_to_notes import textgrid_to_notes
+from textgrid_to_notes import LyricLanguage, textgrid_to_notes
 
 
 def _default_output_filename(input_path: str) -> str:
@@ -32,6 +32,7 @@ def convert_to_tlp(
     pad_bars: float,
     textgrid_paths,
     segment_audio_paths,
+    lyric_language,
 ):
     if output_filename is None or output_filename.strip() == "":
         return "输出文件名为空。", None
@@ -52,6 +53,10 @@ def convert_to_tlp(
 
     notes = []
     if textgrid_paths:
+        selected_lang = LyricLanguage.JAPANESE.value
+        if lyric_language == "中文":
+            selected_lang = LyricLanguage.CHINESE.value
+
         textgrid_list = [path for path in textgrid_paths if path]
         segment_audio_list = [path for path in (segment_audio_paths or []) if path]
 
@@ -70,6 +75,7 @@ def convert_to_tlp(
                         fps,
                         f0,
                         time_offset_sec=offset_sec,
+                        language=selected_lang,
                     )
                 )
             except Exception as e:
@@ -156,6 +162,12 @@ def build_tab():
             label="结尾 padding 小节数（默认 1）", value=1.0, minimum=0
         )
 
+        lyric_language_input = gr.Radio(
+            label="TextGrid 语言",
+            choices=["日语", "中文"],
+            value="日语",
+        )
+
         textgrid_input = gr.File(
             label="可选：TextGrid 文件（支持多选）",
             file_types=[".textgrid"],
@@ -187,6 +199,7 @@ def build_tab():
                 pad_bars,
                 textgrid_input,
                 segment_audio_input,
+                lyric_language_input,
             ],
             outputs=[status_tab_1, output_file_tab_1],
         )
